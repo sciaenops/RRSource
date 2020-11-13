@@ -1,0 +1,104 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Arena.gd" type="Script" id=2]
+[ext_resource path="res://Sprites/background.png" type="Texture" id=3]
+[ext_resource path="res://Fonts/zekton rg.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://Score.gd" type="Script" id=5]
+[ext_resource path="res://Camera2D.gd" type="Script" id=6]
+[ext_resource path="res://HighScore.gd" type="Script" id=7]
+[ext_resource path="res://Audio.gd" type="Script" id=8]
+[ext_resource path="res://Sounds/Zap.wav" type="AudioStream" id=9]
+[ext_resource path="res://Sounds/RoverDeath.wav" type="AudioStream" id=10]
+[ext_resource path="res://Sounds/MonsterHit.wav" type="AudioStream" id=11]
+[ext_resource path="res://Sounds/MonsterDeath.wav" type="AudioStream" id=12]
+
+[sub_resource type="DynamicFont" id=1]
+size = 50
+font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 37
+font_data = ExtResource( 4 )
+
+[node name="Arena" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="background" type="Sprite" parent="."]
+position = Vector2( 495.915, 299.034 )
+z_index = -2
+texture = ExtResource( 3 )
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 500, 300 )
+
+[node name="Spawn" type="Timer" parent="."]
+wait_time = 2.819
+autostart = true
+
+[node name="Difficulty" type="Timer" parent="."]
+autostart = true
+
+[node name="UI" type="Node2D" parent="."]
+z_index = 20
+
+[node name="Control" type="Control" parent="UI"]
+margin_right = 640.0
+margin_bottom = 360.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" type="Label" parent="UI/Control"]
+margin_right = 1027.0
+margin_bottom = 125.0
+custom_fonts/font = SubResource( 1 )
+align = 1
+valign = 1
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HighScore" type="Label" parent="UI/Control"]
+anchor_left = -0.001
+anchor_top = 1.647
+anchor_right = -0.001
+anchor_bottom = 1.647
+margin_left = 0.261582
+margin_top = -126.836
+margin_right = 1025.26
+margin_bottom = 0.16449
+custom_fonts/font = SubResource( 2 )
+align = 1
+valign = 1
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 512, 300 )
+current = true
+script = ExtResource( 6 )
+
+[node name="ScreenTime" type="Timer" parent="Camera2D"]
+one_shot = true
+
+[node name="Audio" type="Node" parent="."]
+script = ExtResource( 8 )
+
+[node name="Crash" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource( 10 )
+
+[node name="Death" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource( 12 )
+
+[node name="Ouch" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource( 11 )
+
+[node name="Zap" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource( 9 )
+[connection signal="timeout" from="Spawn" to="." method="_on_Spawn_timeout"]
+[connection signal="timeout" from="Difficulty" to="." method="_on_Difficulty_timeout"]
+[connection signal="timeout" from="Camera2D/ScreenTime" to="Camera2D" method="_on_ScreenTime_timeout"]
